@@ -1,8 +1,10 @@
-import { Formik, Field } from "formik";
 import React from "react";
 import reactDom from "react-dom";
+import { Formik, Field } from "formik";
 import { useState } from "react";
 import { styles } from "./styles";
+import { countArgorythms } from "./CountFile";
+import { Modal } from "./ModalComponent";
 
 export default function Form() {
   return (
@@ -17,56 +19,69 @@ export default function Form() {
   );
 }
 function LabelForm(props) {
+  const typeValues = [props.val1, props.val2, props.val3];
+  const argorythms = props.argorythms;
+  const [see, useSee] = useState(false);
+  const [trueValues, setTrueValues] = useState([]);
+
   return (
     <styles.container>
-      <Container>
-        <Formik
-          initialValues={{ unit: "Meters" }}
-          onSubmit={(data) => {
-            let value;
-            if (data.unit === "Miles") {
-              value = props.argorythms.fromMiles(data.val);
-            } else if (data.unit === "Foots") {
-              value = props.argorythms.fromFoots(data.val);
-            } else {
-              value = data.val * 1;
-            }
-          }}
-        >
-          {({ values, touched, handleChange, handleBlur, handleSubmit }) => (
-            <form onSubmit={handleSubmit}>
-              <styles.button type="submit">Submit</styles.button>
-              <styles.input
-                defaultValue={values.val}
-                name="val"
-                onChange={handleChange}
-                onBlur={handleBlur}
-                type="text"
-                placeholder={values.unit}
-              />
-              <Field as="select" name="unit">
-                <styles.option value={props.val1}>Meters</styles.option>
-                <styles.option value={props.val2}>Miles</styles.option>
-                <styles.option value={props.val3}>Foots</styles.option>
-              </Field>
-            </form>
-          )}
-        </Formik>
-      </Container>
-      <Modal>
-        <h1>siema</h1>
-      </Modal>
-      <Container />
+      <Formik
+        initialValues={{ unit: "Meters" }}
+        onSubmit={(data) => {
+          setTrueValues([data.unit, data.val]);
+          useSee(true);
+          console.log(data);
+        }}
+      >
+        {({ values, touched, handleChange, handleBlur, handleSubmit }) => (
+          <form onSubmit={handleSubmit}>
+            <Button />
+            <Input
+              values={values}
+              handleChange={handleChange}
+              handleBlur={handleBlur}
+            />
+            <Select />
+            <Modal
+              types={typeValues}
+              argorythms={argorythms}
+              values={values}
+              see={see}
+              trueValues={trueValues}
+            />
+          </form>
+        )}
+      </Formik>
     </styles.container>
   );
 }
 
-function Modal(props) {
-  const kid = props.children;
-  return reactDom.createPortal(kid, document.getElementById("root"));
+function Button(props) {
+  return <styles.button type="submit">Submit</styles.button>;
 }
-//
-//
+function Input(props) {
+  return (
+    <styles.input
+      defaultValue={props.values.val}
+      name="val"
+      onChange={props.handleChange}
+      onBlur={props.handleBlur}
+      type="text"
+      placeholder={props.values.unit}
+    />
+  );
+}
+function Select(props) {
+  return (
+    <Field as="select" name="unit">
+      <styles.option value={props.val1}>Meters</styles.option>
+      <styles.option value={props.val2}>Miles</styles.option>
+      <styles.option value={props.val3}>Foots</styles.option>
+    </Field>
+  );
+}
+
 const validate = (values) => {
   const errors = {};
   if (values.val === "1") {
@@ -74,24 +89,3 @@ const validate = (values) => {
   }
   return errors;
 };
-const countArgorythms = {
-  lenght: {
-    fromMiles: (arg) => {
-      return arg * 1609;
-    },
-    fromFoots: (arg) => {
-      return arg * 3.2;
-    },
-    toMiles: (arg) => {
-      return arg / 1609;
-    },
-    toFoots: (arg) => {
-      return arg / 3.2;
-    },
-  },
-};
-function Container(props) {
-  console.log(props.children);
-  const [counted, setCounted] = useState(false);
-  return props.children;
-}
