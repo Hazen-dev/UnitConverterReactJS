@@ -23,5 +23,5 @@ export const styles = {
   option: styled.option`
     border: none;
     color: red;
-  `
+  `,
 };
