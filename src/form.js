@@ -1,21 +1,34 @@
 import React, { useState } from "react";
-import reactDom from "react-dom";
 import { Formik, Field, ErrorMessage } from "formik";
 import { styles } from "./styles";
 import { countArgorythms } from "./CountFile";
 import { Modal } from "./ModalComponent";
 import Msg from "./ErrorMsg";
+import { CountToMeter, CountToKilograms } from "./CountFile";
 
 export default function Form() {
   return (
-    <LabelForm
-      validate={validate}
-      name="lenght"
-      val1="Meters"
-      val2="Miles"
-      val3="Foots"
-      argorythms={countArgorythms.lenght}
-    />
+    <React.Fragment>
+      <styles.header>Unit Converter</styles.header>
+      <LabelForm
+        validate={validate}
+        name="lenght"
+        val1="Meters"
+        val2="Miles"
+        val3="Foots"
+        argorythms={countArgorythms.lenght}
+        firstConvert={CountToMeter}
+      />
+      <LabelForm
+        validate={validate}
+        name="weight"
+        val1="Kilograms"
+        val2="Ounces"
+        val3="Pounds"
+        argorythms={countArgorythms.weight}
+        firstConvert={CountToKilograms}
+      />
+    </React.Fragment>
   );
 }
 function LabelForm(props) {
@@ -23,7 +36,6 @@ function LabelForm(props) {
   const argorythms = props.argorythms;
   const [see, useSee] = useState(false);
   const [trueValues, setTrueValues] = useState([]);
-
   return (
     <styles.container>
       <Formik
@@ -46,13 +58,22 @@ function LabelForm(props) {
               />
               <Button />
             </styles.topWrapper>
-            <Select inputRef={inputRef} />
+            <Select
+              inputRef={inputRef}
+              val1={props.val1}
+              val2={props.val2}
+              val3={props.val3}
+            />
 
             <Modal
               setSee={useSee}
               argorythms={argorythms}
               see={see}
               trueValues={trueValues}
+              firstConvert={props.firstConvert}
+              val1={props.val1}
+              val2={props.val3}
+              val3={props.val2}
             />
             <ErrorMessage name="val">{(msg) => <Msg msg={msg} />}</ErrorMessage>
           </form>
@@ -67,7 +88,6 @@ function Button(props) {
 }
 function Input(props) {
   const inputRef = props.inputRef;
-  // console.log(props.see);
   return (
     <>
       <styles.input
@@ -84,8 +104,6 @@ function Input(props) {
   );
 }
 function Select(props) {
-  //console.log(props.inputRef);
-  //props.inputRef.current.focus();
   const stylesSelected = {
     fontSize: "1rem",
     border: "none",
@@ -96,9 +114,9 @@ function Select(props) {
   };
   return (
     <Field as="select" name="unit" style={stylesSelected}>
-      <styles.option value={props.val1}>Meters</styles.option>
-      <styles.option value={props.val2}>Miles</styles.option>
-      <styles.option value={props.val3}>Foots</styles.option>
+      <styles.option value={props.val1}>{props.val1}</styles.option>
+      <styles.option value={props.val2}>{props.val2}</styles.option>
+      <styles.option value={props.val3}>{props.val3}</styles.option>
     </Field>
   );
 }
