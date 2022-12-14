@@ -1,6 +1,13 @@
 import styled from "styled-components";
 
 export const styles = {
+  header: styled.h1`
+    margin: 0 auto;
+    display: table;
+    font-family: "Inter", sans-serif;
+    font-family: "Poppins", sans-serif;
+    color: #eff7f6;
+  `,
   container: styled.div`
     width: min-content;
     padding 1rem 5vw;
@@ -73,7 +80,13 @@ export const styles = {
     left: 7.5%;
     background: #eff7f6;
     border-radius: 20px;
+    top: 33vh;
     margin: 0 auto;
+
+    @media (min-width: 1360px) and (min-height: 663px) {
+      width: 30%;
+      left: 35%;
+    }
   `,
   modalText: styled.p`
     font-size: 1rem;
